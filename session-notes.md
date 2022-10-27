@@ -2,7 +2,146 @@
 
 ## Contents
 
+- [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
 - [Understanding the Feature Lifecycle In Kubernetes](#understanding-the-feature-lifecycle-in-kubernetes)
+
+---
+
+## Learn About Helm and its Ecosystem
+
+- **Title**: Learn About Helm and its Ecosystem 
+- **Presenters**: Andrew Block & Karena Angell, Red Hat; Matt Farina, SUSE; Scott Rigby, Weaveworks
+
+### Helm: Package manager for Kubernetes.
+
+More to the concept than just "packaging something up." It allows someone that isn't intimitely familiar with underlyding systems to install/run/be sucessful with a tool.
+
+Example: Wordpress
+- If you were to install and run WP yourself via K8s, it requires knowledge of: Wordpress itself, secrets, statefulSet, Service, HPA, Deployment, and Network Policies.
+- You can create a 'package' that manages/orchestrates all of these things.
+
+### Helm: 3 Parts
+
+1. Charts - the packages themselves.
+2. Helm Client (CLI)
+3. Helm SDK
+
+### Helm is Stable Software
+
+Backwards-compatible guarantee.
+
+Helm follows semantic versioning.
+- Minor releases 3 times per year.
+
+Helm is a CNCF graduated project.
+
+### The Ecosystem
+
+Examining the ecosystem stack:
+
+```mermaid
+flowchart TD
+    A --- B --- C
+    B --- D
+    C --- E
+    D --- E
+    A[Configuration Management]
+    B[Package Management]
+    C[Binaries]
+    D[Config]
+    E[Operating System]
+```
+
+A typical linux ecosystem looks something like this:
+
+```mermaid
+flowchart TD
+    A --- B --- C
+    B --- D
+    C --- E
+    D --- E
+    A[Chef, Puppet, Ansible, etc]
+    B[apt, zypper, yum, etc]
+    C[ELF Binaries]
+    D["/etc"]
+    E[GNU/Linux]
+```
+
+A typical kubernetes example looks like this:
+
+```mermaid
+flowchart TD
+    A --- B --- C
+    B --- D
+    C --- E
+    D --- E
+    A[A bunch of options...]
+    B[Helm]
+    C[Images]
+    D[K8s Resources]
+    E[Kubernetes]
+```
+
+#### Platform/app management (top level) examples:
+- Flux
+- Argo
+- Helmfile
+- Terraform
+
+### Chart Storage
+- Push charts to container registries (Any OCI registries that supports artifacts)
+- Harbor
+- Helm has a plugin system so you can store charts in other places (eg S3)
+
+### Discovery
+How are you finding your charts?
+- Helm Hub has been deprecated
+- Artifact Hub created to replace Helm Hub.
+  - Supports Helm Charts
+  - Operators
+  - Plugins
+  - and much more!
+- Many other places...
+  - Bitnami
+  - Nvidia Catalog
+  - Rancher Charts Catalog
+  - Red Hat Openshift Dev Console
+  - etc...
+
+### Developer Tools
+
+How to integrate Helm into your development workflows?
+
+- Helm SDK (golang)
+- Generate JSON schema from values
+  - plugins to do this...
+- Helm react UI
+- Red Hat Chart Verifier
+- Chart Testing
+- CI: Helm Project Actions
+  - And many more in Github Actions catalogue
+- IDE Integration
+  - VS Code Extension
+  - Vim Plugins
+    - vim-kubernetes
+    - vim-helm
+
+### Getting Involved
+
+- Build projects on top of Helm.
+- Look at Helm Plugins
+- Helm Source Code
+  - Always looking for people to fix bugs, implement features, contribute
+- [Helm Website](https://helm.sh)
+- Channels in Kubernetes Slack
+  - #helm-users
+  - #helm-dev
+  - #charts
+- Mailing List: https://lists.cncf.io/g/cncf-helm
+- Community Meeting on Thursday
+
+---
+
 
 ## Understanding the Feature Lifecycle In Kubernetes
 
@@ -88,3 +227,5 @@ It happens. In some cases, the outcome may not be the simple/optimal solution fo
 - Take a look into past enhancements. Explore features, track/test features in alpha. Provide feedback.
 - Don't be shy.
 - Not only code changes are needed/required. You can propose changes/improvements to docs or provide feedback as a user.
+
+## 
