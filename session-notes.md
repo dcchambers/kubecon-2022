@@ -3,6 +3,7 @@
 ## Contents
 
 - [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
+- [Prometheus - Intro, Deep Dive, And Open Q+A](#prometheus---intro-deep-dive-and-open-qa)
 - [Understanding the Feature Lifecycle In Kubernetes](#understanding-the-feature-lifecycle-in-kubernetes)
 
 ---
@@ -142,6 +143,104 @@ How to integrate Helm into your development workflows?
 
 ---
 
+## Prometheus - Intro, Deep Dive, And Open Q+A
+- **Title**: Prometheus - Intro, Deep Dive, And Open Q+A
+- **Presenters**: Goutham Veeramachaneni & Ganesh Vernekar, Grafana Labs
+
+Prometheus: A metrics-based monitoring & alerting stack.
+- Instrumentation for apps and systems
+- Metrics collection and storage
+- Querying, alerting, dashboards
+- Designed from the ground up for dynamic cloud environemnts.
+
+What is it not?
+- logging or tracing
+- automatic anomaly detection
+- scalable or durable storage
+
+### History
+
+- Started at SoundCloud in 2012 from some ex-Googlers that missed Google's monitoring systems.
+- Made public in 2015.
+- Joined CNCF in 2016.
+
+### Architecture
+
+- Prometheus uses a pull-based system to gather metrics/data.
+- Include Prometheus client libraries in your application.
+  - E.g. include a /metrics API endpoint that prometheus can collect data from. 
+- Prometheus collects data from various targets (API endpoints, VM, cgroups, etc) and stores them in central database for collection/storage/processing
+- Prometheus neends to know what services exist.
+  - It communicates with service discovery (DNS, K8s, AWS, Consul, etc)
+  - Because Prometheus talks to your service discovery/k8s API in a pull-based manor, it can tell when services are down (or if only certain percent of services are down)
+- UI
+  - Web UI
+  - Grafana
+  - Automation
+- Alerting
+  - Alertmanager
+
+### Selling Points
+
+- Data model
+- Query Language (PromQL)
+- Simple & Efficient Server
+- Service Discovery Integration
+
+### Data Model
+
+- A label-based time series
+
+### Querying
+
+- PromQL Query Language
+  - Functional
+  - Not SQL-style
+  - Support for custom groupings
+  - Supports time offsets
+
+Simple example: What is the ratio of request errors across all service instances?
+- `sum(rate(http_requests_total{status="500"}[5m])) / sum(rate(http_requetss_total[5m]))`
+
+Group by path:
+- `sum by(path) (rate(http_requests_total{status="500"}[5m])) / sum by(path) (rate(http_requetss_total[5m]))`
+
+### Alert
+
+Configure alerts based on a matching time series
+
+### Efficiency
+
+Local storage is scalable enough for many orgs.
+- 1M+ samples/sec
+- Millions of series
+- 1-2 bytes per sample
+- Good for keeping weeks ro months of data, and some orgs keep years with careful backup processes.
+
+### Not Everything "Speaks" Prometheus
+- Prometheus exporters - many are available!
+    - Translate from other metric systems
+    - Transform system-specific metrics
+    - Do it yourself (JSON exporter, Python, Go, etc)
+
+### Remote Write Receiver
+Configure prometheus to write data to a remote server.
+
+### Agent Mode
+If you don't want to store any data in prometheus.
+- Forwards data to remote storage.
+- Reduces load/server requirements.
+
+### Release Cycle
+- Up until recently, new version released every 6 weeks.
+- Starting in v2.37, LTS support added (6+ months)
+  - Will get backports of critical bug fixes.
+
+### New/What's Coming
+- Support for out-of-order time series (v2.39)
+- Support for native histograms (v2.40)
+
+---
 
 ## Understanding the Feature Lifecycle In Kubernetes
 
@@ -227,5 +326,3 @@ It happens. In some cases, the outcome may not be the simple/optimal solution fo
 - Take a look into past enhancements. Explore features, track/test features in alpha. Provide feedback.
 - Don't be shy.
 - Not only code changes are needed/required. You can propose changes/improvements to docs or provide feedback as a user.
-
-## 
