@@ -2,9 +2,71 @@
 
 ## Contents
 
+- [Extend Your Microservices With Pluggable Components Via Dapr](#extend-your-microservices-with-pluggable-components-via-dapr)
 - [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
 - [Prometheus - Intro, Deep Dive, And Open Q+A](#prometheus---intro-deep-dive-and-open-qa)
 - [Understanding the Feature Lifecycle In Kubernetes](#understanding-the-feature-lifecycle-in-kubernetes)
+
+---
+
+## Extend Your Microservices With Pluggable Components Via Dapr
+- **Title**: Extend Your Microservices With Pluggable Components Via Dapr
+- **Presenters**: Artur Souza, Microsoft & Yaron Schneider, Diagrid
+
+### Dapr Overview
+
+Dapr - Distributed system APIs to help handle the complexity of microservice architecture.
+- Service-to-service invocation
+- State management
+- pub/sub
+- resource bindings/triggers
+- actors
+- observability
+- sercrets
+- config
+- and more...
+
+```mermaid
+flowchart LR
+    A <-- "Dapr API (http/gRPC)"  --> B
+    A[Your application]
+    B[Dapr]
+```
+
+Dapr integrates with your existing infrastucture.
+- Over 100 community components
+- state stores
+- pubsub brokers
+- secrets engines
+- etc...
+
+### Dapr Components
+
+- Compiled as part of the Dapr binary
+- Written in Go.
+- Private components added in v1.9
+
+#### Design tenants
+
+1. Secure - uses unix domain sockets
+2. Leverages gRPC for comms using RPC standard.
+3. Low operational overhead - Leverages existing Dapr CRDs
+4. Platform agnostic - support for both K8s and self-hosted modes
+
+#### Plugins
+
+- No Go plugin support (intentional)
+
+#### Adding components in Kubernetes
+
+- Use annotations
+
+Private components:
+- Add an additional image to your K8s manifest.
+
+### Demo
+
+Watch the recording if interested 🤷
 
 ---
 
