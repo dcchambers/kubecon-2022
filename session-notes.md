@@ -4,6 +4,7 @@
 
 - [Extend Your Microservices With Pluggable Components Via Dapr](#extend-your-microservices-with-pluggable-components-via-dapr)
 - [From Security Testing To Deployment In a Single PR](#from-security-testing-to-deployment-in-a-single-pr)
+- [How To Build Production Grade DevOps Platform Using Argoproj](#how-to-build-production-grade-devops-platform-using-argoproj)
 - [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
 - [Prometheus - Intro, Deep Dive, And Open Q+A](#prometheus---intro-deep-dive-and-open-qa)
 - [Understanding the Feature Lifecycle In Kubernetes](#understanding-the-feature-lifecycle-in-kubernetes)
@@ -172,6 +173,101 @@ Some best practices for branch protection rules:
   - Open conversation via PRs
   - Fix vulns with code review
   - Share knowledge with team
+
+---
+
+## How To Build Production Grade DevOps Platform Using Argoproj
+
+- **Title**: How To Build Production Grade DevOps Platform Using Argoproj
+- **Presenters**: Alexander Matyushentsev, Akuity & Leonardo Luz Almeida, Intuit
+
+*Note*: The presenters were muted for the first ~5 minutes of the talk so my notes covering the introduction aren't great.
+
+### Agenda
+- Decision breakdown
+  - Tickets vs GitOps
+  - Deployment Repo
+  - Manifest Generation
+  - Mlti-tenancy
+- Hands-on
+  - SSO
+  - RBAC
+  - Projects
+  - Application Sets
+
+### Decision Breakdown
+
+Tickets vs. GitOps
+
+- Collaborate and store config, k8s manifest yaml files in Git.
+- ArgoCD integrates with your git repo and deploys to your K8s cluster/communicates with K8s.
+
+First decision: The Git Repository
+- Centralized repo (the same repo that houses your source code also stores your manifest files and config)
+  - Pros
+    - Source and config together
+  - Cons
+    - Harder auth model
+    - Complex CI
+    - Mixed history
+- Use an independent repo to store manifest files and config
+  - Pros
+    - Simpler CI
+    - Easier auth model
+    - Cleaner history
+  - Cons
+    - Decentralized
+
+If using an independent repo, what does manifest generation look like?
+- kustomize
+- bespoke solution
+
+Multi-tenancy
+- Has to support multiple teams that are protected from each other.
+- Argo provides a "project" CRD that defines:
+  - users
+  - git repos
+  - RBAC
+  - target clusters
+  - etc...
+
+### Hands-On
+
+Configure SSO
+- ArgoCD supports OIDC
+- Works out of the box with providers like Auth0, Okta, Azure Idp, etc
+- Uses received OIDC claims to authorize users
+
+Access Control
+- Uses RBAC
+- Powered by Casbin (casbin.org)
+- Fully flexible config
+- Able to define gorups with arbitrary set of permissions
+
+Projects
+- 'Projects' powers Argo CD multi-tenancy
+- Provides logical grouping for applications
+- Define boundaries and isolate teams
+- Connect SSO and RBAC settings
+
+PRs, not Tickets.
+- Store ArgoCD Config in git
+- Use ARgoCD to self-apply git changes
+- Replace tickets with RPs
+  - Developers can self-onboard via PRs
+  - Platform admins can review and merge/reject PRs
+
+### Demo
+
+- https://github.com/kubecon-us-2022-argo/control-plane
+  - Demo proj that has a bunch of K8s manifests that the platform team manages
+  - Contains config to let ArgoCD manage itself
+  - Adds a new team (`team-a.yaml`) with RBAC permissions
+  - Using GitOps to manage cluster resources
+
+### Personal Note
+
+We run our own Spinnaker-based deployment platform at Zendesk, and it seem to share a ton of the same principles/ideas.
 
 ---
 
