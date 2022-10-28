@@ -4,6 +4,7 @@
 
 - [Extend Your Microservices With Pluggable Components Via Dapr](#extend-your-microservices-with-pluggable-components-via-dapr)
 - [From Security Testing To Deployment In a Single PR](#from-security-testing-to-deployment-in-a-single-pr)
+- [How Intuit Manages Cloud Resources Via GitOps](#how-intuit-manages-cloud-resources-via-gitops)
 - [How To Build Production Grade DevOps Platform Using Argoproj](#how-to-build-production-grade-devops-platform-using-argoproj)
 - [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
 - [Prometheus - Intro, Deep Dive, And Open Q+A](#prometheus---intro-deep-dive-and-open-qa)
@@ -176,6 +177,77 @@ Some best practices for branch protection rules:
 
 ---
 
+## How Intuit Manages Cloud Resources Via GitOps
+
+- **Title**: How Intuit Manages Cloud Resources Via GitOps
+- **Presenters**: Jerome Kuptz & Ameen Radwan, Intuit
+
+### Agenda
+1. Journey
+1. Landscape
+1. Problem
+1. Solution
+1. Demo
+
+### Intuit's journey
+
+- 2013 - deciced all-in on cloud
+- increasing scale
+- 2018ish - move to containers and K8s
+- 2022 - modernization
+
+### Landscape
+
+- A lot of services need supporting resources
+- Lots of non-container based resources/services
+- Still some legacy services
+
+### Problem
+
+- Lots of engineers were making various types of solutions for themselves.
+  - Orchestration: custom automation, jenkins, manually
+  - Using cloudformation (CFN), CDK, Terraform
+- Chaos/free-for-all
+
+### Principles
+
+1. Align with existing standards
+1. Develop as open source wherever/whenever possible
+1. Cloud agnostic
+1. Infra-as-code with GitOps
+1. Isolation from cloud environment
+
+### Solution: Cello
+Cello: An engine for cloud deployments
+
+- https://github.com/cello-proj/cello
+
+<!-- I was lazy and didn't want to recreate these diagrams in mermaid so this is ripped from the broadcast. Credit to Jerome Kuptz/Ameen Radwan -->
+![](/assets/images/cello-workflow.png)
+![](/assets/images/dev-workflow.png)
+
+### Demo
+
+Demo:
+- How to deploy Infra-as-code using cello
+- Create a project in Cello
+- Cello manifests
+- The process
+
+### Adoption
+
+Has been in use for about a year internally at Intuit
+- 1000+ projects using Cello for cloud deployments
+- 150+ projects deploying cloud resources to production
+
+### What's Next
+
+- Credential provider abstraction (currently vault)
+- Multi-cloud
+- User Interface
+
+---
+
 ## How To Build Production Grade DevOps Platform Using Argoproj
 
 - **Title**: How To Build Production Grade DevOps Platform Using Argoproj
@@ -268,77 +340,6 @@ PRs, not Tickets.
 ### Personal Note
 
 We run our own Spinnaker-based deployment platform at Zendesk, and it seem to share a ton of the same principles/ideas.
-
----
-
-## How Intuit Manages Cloud Resources Via GitOps - Jerome Kuptz & Ameen Radwan, Intuit
-
-- **Title**: How Intuit Manages Cloud Resources Via GitOps
-- **Presenters**: Jerome Kuptz & Ameen Radwan, Intuit
-
-### Agenda
-1. Journey
-1. Landscape
-1. Problem
-1. Solution
-1. Demo
-
-### Intuit's journey
-
-- 2013 - deciced all-in on cloud
-- increasing scale
-- 2018ish - move to containers and K8s
-- 2022 - modernization
-
-### Landscape
-
-- A lot of services need supporting resources
-- Lots of non-container based resources/services
-- Still some legacy services
-
-### Problem
-
-- Lots of engineers were making various types of solutions for themselves.
-  - Orchestration: custom automation, jenkins, manually
-  - Using cloudformation (CFN), CDK, Terraform
-- Chaos/free-for-all
-
-### Principles
-
-1. Align with existing standards
-1. Develop as open source wherever/whenever possible
-1. Cloud agnostic
-1. Infra-as-code with GitOps
-1. Isolation from cloud environment
-
-### Solution: Cello
-Cello: An engine for cloud deployments
-
-- https://github.com/cello-proj/cello
-
-<!-- I was lazy and didn't want to recreate these diagrams in mermaid so this is ripped from the broadcast. Credit to Jerome Kuptz/Ameen Radwan -->
-![](/assets/images/cello-workflow.png)
-![](/assets/images/dev-workflow.png)
-
-### Demo
-
-Demo:
-- How to deploy Infra-as-code using cello
-- Create a project in Cello
-- Cello manifests
-- The process
-
-### Adoption
-
-Has been in use for about a year internally at Intuit
-- 1000+ projects using Cello for cloud deployments
-- 150+ projects deploying cloud resources to production
-
-### What's Next
-
-- Credential provider abstraction (currently vault)
-- Multi-cloud
-- User Interface
 
 ---
 
