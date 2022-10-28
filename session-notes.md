@@ -4,6 +4,7 @@
 
 - [Extend Your Microservices With Pluggable Components Via Dapr](#extend-your-microservices-with-pluggable-components-via-dapr)
 - [From Security Testing To Deployment In a Single PR](#from-security-testing-to-deployment-in-a-single-pr)
+- [How Salesforce Is Moving From Spinnaker To Argo Workflows For Provisioning Add-Ons](#how-salesforce-is-moving-from-spinnaker-to-argo-workflows-for-provisioning-add-ons)
 - [How Intuit Manages Cloud Resources Via GitOps](#how-intuit-manages-cloud-resources-via-gitops)
 - [How To Build Production Grade DevOps Platform Using Argoproj](#how-to-build-production-grade-devops-platform-using-argoproj)
 - [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
@@ -245,6 +246,120 @@ Has been in use for about a year internally at Intuit
 - Credential provider abstraction (currently vault)
 - Multi-cloud
 - User Interface
+
+---
+
+## How Salesforce Is Moving From Spinnaker To Argo Workflows For Provisioning Add-Ons
+
+- **Title**: How Salesforce Is Moving From Spinnaker To Argo Workflows For Provisioning Add-Ons
+- **Presenter**: Mayank Kumar & Andy Chen, Salesforce
+
+Who are we?
+- Hyperforce Kubernetes platform team.
+  - Hyperforce is a Salesforce cloud platform.
+
+Add-ons
+- AKA Kubernetes integrations
+  - Not EKS add-ons
+- Examples:
+  - PKI injector
+  - secrets
+  - Identity
+  - OPA
+  - etc...
+
+Improving the lifecycle maangement of add-ons
+- As an industry, we want to manage clusters as cattle. But the reality is many people still have clusters as pets.
+- To manage these pets, need to improve lifecycle managment
+- Add-ons are updated by service owners and rolled out to 1000s of clusters
+- Goals:
+  - Better dev experience.
+  - Faster inner-loop
+  - Faster & more reliable CD pipelines
+  - container-native pipelines as Control Plane
+    - Natively built to run on K8s
+  - off-load the last mile delivery to more scalable model
+
+Current EKS cluster and add-on deployment process
+- Internal infrastructure registry (github)
+- Spinnaker
+  - EKS Cluster deployment pipeline
+  - add-on deployment pipeline
+
+CD pipelines SLIs for add-ons
+- Inner-loop dev velocity on one add-on: 30 min
+- Total spinnaker pipeline for all add-ons: 90
+- Total pipeline executions to deploy add-ons globally: 300K
+- Time to release one EKS cluster: 60-70 min
+- Time to release to all environments: 7-12 days
+
+Problems
+- Developer experience 
+  - No inner loop
+  - complex UI
+  - poor templating
+  - debugging is hard (lots of nested pipelines)
+- Performance
+  - UI slowness
+  - execution time
+  - responsiveness
+  - throughput
+- Extensibility
+  - Limited stage types (deploy manifest, patch manifest)
+- Reliability
+  - intermittent failures & mutable pipelines
+  - no native retries
+- Visibility
+  - limited insight into per-stage and per-pipeline metrics
+
+Solution
+- Offload the last-mile delivery of the add-ons to Argo Workflows
+- Argo Workflow: Container Native CNCF-incubating workflow engine
+  - Each workflow is defined in a CRD instance called a workflow
+- Still use spinnaker to manage promotion between enviroments (dev --> test --> prod)
+- Spinnaker hands off the workload to Argo workflow controller running in the control plane
+- Improvements
+  - Allows for better scaling across environments
+  - Make use of Argo workflows
+  - Improves developer experience (eg lets devs use `kubectl`)
+
+Why Argo workflows?
+- Overall feature parity with spinnaker pipelines
+  - stage execution
+  - conditionals and expressions
+  - limit parallelism
+  - greater extensibility
+- K8s native
+- Support for retrying failed steps
+- Memoization and caching support
+- Immutable workflows and simplified node nesting
+- Powerful visualization + UI
+
+Improvements so far:
+- 35 spinnaker pipelines reduced to only 4 argo workflow executions
+- 20% improvement in add-on provisioning time
+- 50% improvement in dev inner-loop velocity
+
+
+Steps to convert to Argo Workflows:
+1. Enable Argo Workflow clusters per environment
+1. Enable archival, offloading and Pod GC for scale
+1. Enable control plane model for Helm and IAC deployment
+1. Enable sharding to handle large number of workflows
+1. Create a library of reusable workflow templates
+1. Convert add-on pipelines to Argo Workflows
+1. Integrate Argo Workflow deployment with Spinnaker
+1. Enable monitoring dashboards (per stage and per workflow)
+1. Enable extensive memoization/caching across stages
+1. Expose K8s native scaling per workflow (resource, priority)
+
+Takeaways
+- Focus on improving developer experience.
+- CD pipelines are production services. Spend time measuring SLIs and improving them.
+- Container-native workflows (like Argo, Tekton)
+- Adopt open source kubernetes ecosystem tools. Focus on tools that adopt KRM.
+  - Familiar industry standard tooling is easier to learn, maintain, hire for, and it improves the community.
+  - KRM is the language that will bind the next gen of industry standard tooling.
 
 ---
 
