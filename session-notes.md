@@ -3,6 +3,7 @@
 ## Contents
 
 - [Extend Your Microservices With Pluggable Components Via Dapr](#extend-your-microservices-with-pluggable-components-via-dapr)
+- [From Security Testing To Deployment In a Single PR](#from-security-testing-to-deployment-in-a-single-pr)
 - [Learn About Helm and its Ecosystem](#learn-about-helm-and-its-ecosystem)
 - [Prometheus - Intro, Deep Dive, And Open Q+A](#prometheus---intro-deep-dive-and-open-qa)
 - [Understanding the Feature Lifecycle In Kubernetes](#understanding-the-feature-lifecycle-in-kubernetes)
@@ -67,6 +68,110 @@ Private components:
 ### Demo
 
 Watch the recording if interested 🤷
+
+---
+
+## From Security Testing To Deployment In a Single PR
+
+- **Title**: From Security Testing To Deployment In a Single PR
+- **Presenters**: Sarah Khalife, GitHub & Grant Griffiths, Portworx
+
+### Overview & Motivations
+
+KubeCon eu 2020: testing with automation + KinD.
+
+Covered in this session:
+1. Steps to automate build process while incorporating security form the start
+1. Open source & free tooling to run security scans across code, dependencies, and various cloud native components
+1. Orchestrating the above via a single PR and validating before merging code.
+
+Goals:
+- Run integration + security testing in a single PR
+- Detect earlier and block merges
+- Configure branch rules
+- Automate everything
+
+### Security Scanning
+
+Motivations:
+- Recent high profile vulnerabilities/exploits
+- Friction in security scanning process
+- Splunk state of security:
+  - 65% of orgs worldwide report increase in cyberattacks.
+- More high/critical vulns than ever before.
+
+Types of security scanning
+1. Image scanning
+1. Dependency checks
+1. Static code analysis
+1. Config checks
+
+### Automation + CI
+
+Typical (old/bad) workflow:
+1. Dev makes code changes and creates PR
+1. Build job - build image and test
+1. Merge PR when tests pass
+1. Dev complete, release soon
+1. QA team/sec team runs security scans
+    - If the scan fails, dev has to go back and fix bugs/vulns.
+
+Improved workflow:
+1. Dev makes code changes and creates PR
+1. Build job - build image and test
+1. Parallel vulnerability scanning (with open source/free/CNCF tools)
+    - Containers: trivy
+    - Dependencies: dependabot
+    - Static Analysis: CodeQL
+    - Infrastucutre: TFSec
+1. Merge PR
+1. Deploy!
+
+### Demo
+
+Demo project: Stork
+- Actual project: github.com/libopenstorage/stork
+- Fork for this demo: github.com/stork-kubecon22/stork
+
+This demo:
+- Show open PRs
+  - Failed builds
+- Branch protection rules
+- Merge sucessful PR
+- Image deployed to DockerHub
+
+List of PRs in demo:
+- #21
+  - Add a DB via Terraform. Security scanning detects problems right away.
+- #19
+  - Import database/sql package to webhook.go and build a database. Static code analysis detects an problem (sql injection vulnerability)
+- #9
+  - Dependency vulnerability
+- #20
+  - The checks pass because identified vulnerabilities are all `medium` or `low` severity.
+- #5, #4, #2
+  - Automatic PRs created by Dependabot
+
+Some best practices for branch protection rules:
+- Require a pull request before merging
+- Require status checks to pass before merging
+
+### Takeaways
+
+- Continuous Integration
+  - Automate testing and scanning before merge
+- Fix in minutes
+  - Often able to make fixes within github UI
+  - No context switching requird because scans/tests happen immediately
+- Provide transparency
+  - Set expectations
+  - Configure branch protection
+  - Code scanning
+  - Supply chain analysis
+- Collaborate
+  - Open conversation via PRs
+  - Fix vulns with code review
+  - Share knowledge with team
 
 ---
 
